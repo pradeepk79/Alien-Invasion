@@ -32,21 +32,49 @@ class AlienInvasion:
         #  while loop contains an event loop
         # and code that manages screen updates.
         while True:
-            # Watch for keyboard and mouse events.
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
 
-            # Redraw the screen during each pass through the loop
-            self.screen.fill(self.settings.bg_color)
+            # Isolate event management through helper method
+            self._check_events()
+            # To update the ships position
+            self.ship.update()
+            # Update the screen
+            self._update_screen()
 
-            # After filling the background, draw ship on the screen so ship appears on top of background
+    def _check_events(self):
+        # Watch for keyboard and mouse events.
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
-            self.ship.blitme()
+            # Check for Key down event
+            elif event.type == pygame.KEYDOWN:
+                # check key pressed is of right arrow key
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = True
+                # check key pressed is of left arrow key
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = True
 
-            # Make the most recently drawn screen visible.
-            pygame.display.flip()
-            pygame.display.update()
+            # check key Up or released event
+            elif event.type == pygame.KEYUP:
+                # check key up or released is of right arrow key
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = False
+                # check key released of up is of left arrow key
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = False
+
+
+    def _update_screen(self):
+        """Update images on the screen amd flip to new screen"""
+        # Redraw the screen during each pass through the loop
+        self.screen.fill(self.settings.bg_color)
+        # After filling the background, draw ship on the screen so ship appears on top of background
+        self.ship.blitme()
+
+        # Make the most recently drawn screen visible.
+        pygame.display.flip()
+        pygame.display.update()
 
 
 if __name__ == '__main__':
